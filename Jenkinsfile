@@ -1,28 +1,27 @@
-pipeline{
+pipeline {
+  agent any
+  stages {
+    stage('Build') {
+      steps {
+        sh 'mvn compile'
+      }
+    }
 
- agent any
- 
- tools{
-  maven 'Maven 3.6.3'
+    stage('Unit Test') {
+      steps {
+        sh 'mvn clean test'
+      }
+    }
+
+    stage('Package') {
+      steps {
+        sh 'mvn package -DskipTests'
+        archiveArtifacts 'target/*.war'
+      }
+    }
+
   }
- 
- stages{
-  stage('Build'){
-   steps{
-    sh 'mvn compile'
-   }
-  } 
-
-  stage('Unit Test'){
-   steps{
-    sh 'mvn clean test'
-   }
-  } 
-  
-  stage('Package'){
-   steps{
-    sh 'mvn package -DskipTests'
-   }
-  } 
- }
+  tools {
+    maven 'Maven 3.6.3'
+  }
 }
